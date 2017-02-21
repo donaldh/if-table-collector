@@ -1,6 +1,6 @@
 module if-table-collector {
     yang-version 1;
-    namespace "urn:opendaylight:params:xml:ns:yang:if-table-collector";
+    namespace "urn:net:donaldh:if-table-collector";
     prefix "if-table-collector";
 
     import yang-ext { prefix ext; }
@@ -13,7 +13,7 @@ module if-table-collector {
         description "Initial revision of if-table-collector model";
     }
 
-    grouping soamcollector-attrs {
+    grouping snmp-attrs-group {
         leaf snmp-community {
             type string;
         }
@@ -26,6 +26,6 @@ module if-table-collector {
 
     augment "/nt:network-topology/nt:topology/nt:node" {
         ext:augment-identifier "snmp-attrs";
-        uses soamcollector-attrs;
+        uses snmp-attrs-group;
     }
 }
