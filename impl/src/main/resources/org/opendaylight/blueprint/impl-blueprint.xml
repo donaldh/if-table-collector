@@ -30,8 +30,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <argument ref="publishService" />
   </bean>
 
-  <bean id="topo-listener"
-    class="com.cisco.odl.soam.impl.TopologyChangeListener">
+  <bean id="iftable-topo-listener"
+    class="net.donaldh.iftable.impl.TopologyChangeListener">
     <argument ref="dataBroker" />
     <argument ref="iftable-provider" />
   </bean>

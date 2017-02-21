@@ -29,8 +29,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <mdsal.model.version>0.9.2-Boron-SR2</mdsal.model.version>
     <mdsal.version>1.4.2-Boron-SR2</mdsal.version>
     <restconf.version>1.4.2-Boron-SR2</restconf.version>
+    <netconf.version>1.1.2-Boron-SR2</netconf.version>
     <yangtools.version>1.0.2-Boron-SR2</yangtools.version>
     <dlux.version>0.4.2-Boron-SR2</dlux.version>
+    <snmp.version>1.2.2-Boron-SR2</snmp.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
   </properties>
 
@@ -48,6 +50,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
         <groupId>org.opendaylight.netconf</groupId>
         <artifactId>restconf-artifacts</artifactId>
         <version>${restconf.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.opendaylight.netconf</groupId>
+        <artifactId>netconf-artifacts</artifactId>
+        <version>${netconf.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -92,6 +101,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.netconf</groupId>
+      <artifactId>features-netconf-connector</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.dlux</groupId>
       <artifactId>features-dlux</artifactId>
       <classifier>features</classifier>
@@ -99,6 +114,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
+      <dependency>
+        <groupId>org.opendaylight.snmp</groupId>
+        <artifactId>features-snmp</artifactId>
+        <classifier>features</classifier>
+        <version>${snmp.version}</version>
+        <type>xml</type>
+        <scope>runtime</scope>
+      </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>if-table-collector-impl</artifactId>
@@ -107,6 +130,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>if-table-collector-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>if-mib-model</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
