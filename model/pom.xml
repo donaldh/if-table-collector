@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2016 Cisco Systems, Inc. All rights reserved.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.opendaylight.mdsal.model</groupId>
+    <artifactId>model-parent</artifactId>
+    <version>0.9.2-Boron-SR2</version>
+    <relativePath/>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.donaldh</groupId>
+  <artifactId>if-mib-model</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+
+  <dependencies>
+  <!-- 
+    <dependency>
+      <groupId>org.opendaylight.snmp</groupId>
+      <artifactId>mibs-model</artifactId>
+      <version>1.2.2-Boron-SR2</version>
+    </dependency>
+     -->
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>ietf-yang-types-20130715</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>ietf-inet-types-2013-07-15</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.opendaylight.snmp</groupId>
+        <artifactId>yang-oid-plugin</artifactId>
+        <version>1.2.2-Boron-SR2</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>oid</goal>
+            </goals>
+            <configuration>
+              <yangDirectory>target/generated-sources/mdsal-binding</yangDirectory>
+              <oidDirectory>src/main/oid</oidDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

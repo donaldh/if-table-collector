@@ -1,0 +1,31 @@
+module if-table-collector {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:if-table-collector";
+    prefix "if-table-collector";
+
+    import yang-ext { prefix ext; }
+    
+    import network-topology {
+        prefix "nt";
+    }
+    
+    revision "2015-01-05" {
+        description "Initial revision of if-table-collector model";
+    }
+
+    grouping soamcollector-attrs {
+        leaf snmp-community {
+            type string;
+        }
+        leaf poll-interval {
+            description "Polling interval in seconds";
+            type uint32;
+            default 60;
+        }
+    }
+
+    augment "/nt:network-topology/nt:topology/nt:node" {
+        ext:augment-identifier "snmp-attrs";
+        uses soamcollector-attrs;
+    }
+}
