@@ -53,9 +53,9 @@ import net.donaldh.snmp.MibTable;
 public class IfTableEventSource implements EventSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IfTableEventSource.class);
-    private final java.lang.String name = "soamcollector";
-    private final java.lang.String namespace = "urn:opendaylight:params:xml:ns:yang:soamcollector";
-    private final java.lang.String revision = "2015-01-05";
+    private final java.lang.String name = "if-table-collector";
+    private final java.lang.String namespace = "urn:net:donaldh:if-table-collector";
+    private final java.lang.String revision = "2017-02-22";
 
     public static final String XMLNS_ATTRIBUTE_KEY = "xmlns";
     public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
@@ -191,7 +191,7 @@ public class IfTableEventSource implements EventSource {
 					final Element item = doc.createElement(name);
 					final Object data = method.invoke(entry);
 					if (data != null) {
-					    item.appendChild(doc.createTextNode(data.toString()));
+					    item.appendChild(doc.createTextNode(getValue(data)));
 					    container.appendChild(item);
 					}
 				} catch (Throwable e) {
@@ -201,6 +201,19 @@ public class IfTableEventSource implements EventSource {
     	}
 
     	return container;
+    }
+
+    /*
+     * Many of the SNMP4J value types have a getValue() method and an
+     * overridden toString() that includes the type name.
+     */
+    private String getValue(Object data) {
+        try {
+            Method method = data.getClass().getMethod("getValue");
+            data = method.invoke(data);
+        } catch (Throwable t) {
+        }
+        return data.toString();
     }
 
     // Helper to create root XML element with correct namespace and attribute

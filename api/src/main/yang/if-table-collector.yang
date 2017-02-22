@@ -9,7 +9,7 @@ module if-table-collector {
         prefix "nt";
     }
     
-    revision "2015-01-05" {
+    revision "2017-02-22" {
         description "Initial revision of if-table-collector model";
     }
 
