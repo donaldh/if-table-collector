@@ -31,8 +31,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.smiv2._if.mib.rev000614.InterfaceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.smiv2._if.mib.rev000614.InterfaceIndexOrZero;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.smiv2.inet.address.mib.rev050204.InetAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.Snmp;
@@ -45,27 +43,19 @@ import org.snmp4j.smi.VariableBinding;
 public class MibTable<T> {
     private static final Logger LOG = LoggerFactory.getLogger(MibTable.class);
 
-    private SnmpGetInputBuilder snmpGetInputBuilder;
     private Class<T> builderClass;
     private Map<Integer, T> indexToBuilderObject;
     private Snmp snmp;
+    private String address;
+    private String community;
+    private int port;
 
-    public MibTable(Snmp snmp, Ipv4Address ipv4Address, Class<T> builderClass) {
+    public MibTable(Snmp snmp, String address, String community, int port, Class<T> builderClass) {
         this.snmp = snmp;
+        this.address = address;
+        this.community = community;
+        this.port = port;
         this.builderClass = builderClass;
-        snmpGetInputBuilder = new SnmpGetInputBuilder()
-                .setCommunity(SnmpSettings.DEFAULT_COMMUNITY)
-                .setIpAddress(ipv4Address)
-                .setGetType(SnmpGetType.GETWALK);
-    }
-
-    public MibTable(Snmp snmp, Ipv4Address ipv4Address, String community, Class<T> builderClass) {
-        this.snmp = snmp;
-        this.builderClass = builderClass;
-        snmpGetInputBuilder = new SnmpGetInputBuilder()
-                .setCommunity(community)
-                .setIpAddress(ipv4Address)
-                .setGetType(SnmpGetType.GETWALK);
     }
 
     public Map<Integer, T> populate() {
@@ -99,10 +89,9 @@ public class MibTable<T> {
             OID oid = method.getAnnotation(OID.class);
             if (oid != null) {
                 String oidString = oid.value();
-                snmpGetInputBuilder.setOid(oidString);
                 dataObject.setBaseOID(oidString);
 
-                AsyncGetHandler getHandler = new AsyncGetHandler(snmpGetInputBuilder.build(), snmp);
+                AsyncGetHandler getHandler = new AsyncGetHandler(oidString, address, community, port, snmp);
                 dataObject.setListFuture(getHandler.getListResponse());
             }
         }

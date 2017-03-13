@@ -59,6 +59,7 @@ public class TopologyChangeListener extends OurDataTreeChangeListener<Node> {
             provider.addNode(name,
                     new String(netconfAugment.getHost().getValue()),
                     params.getSnmpCommunity(),
+                    params.getSnmpPort().intValue(),
                     params.getPollInterval());
         }
     }

@@ -54,8 +54,8 @@ public class IfTableCollectorProvider {
         snmp.listen();
     }
 
-    void addNode(String id, String address, String community, Long pollInterval) {
-        IfTableEventSource eventSource = new IfTableEventSource(publishService, snmp, address, community);
+    void addNode(String id, String address, String community, int port, Long pollInterval) {
+        IfTableEventSource eventSource = new IfTableEventSource(publishService, snmp, address, community, port);
         eventSources.put(id, new EventSourceHandle(eventSource));
     }
 

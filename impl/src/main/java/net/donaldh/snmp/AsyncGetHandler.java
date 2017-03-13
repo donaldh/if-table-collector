@@ -13,10 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.SnmpGetType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.snmp.get.output.Results;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.snmp.rev140922.snmp.get.output.ResultsBuilder;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -40,7 +38,6 @@ import com.google.common.util.concurrent.SettableFuture;
 public class AsyncGetHandler implements ResponseListener {
     private static final Logger LOG = LoggerFactory.getLogger(AsyncGetHandler.class);
 
-    private SnmpGetInput snmpGetInput;
     private SettableFuture<RpcResult<SnmpGetOutput>> rpcSettableFuture;
     private SettableFuture<List<VariableBinding>> listSettableFuture;
     private final List<VariableBinding> variableBindings = new ArrayList<>();
@@ -50,28 +47,20 @@ public class AsyncGetHandler implements ResponseListener {
     private OID oid;
     private Snmp snmp;
 
-    public AsyncGetHandler(SnmpGetInput getInput, Snmp snmp) {
-        snmpGetInput = getInput;
+    public AsyncGetHandler(String oidString, String ipAddress, String community, int port, Snmp snmp) {
         this.snmp = snmp;
         pdu = new PDU();
-        oid = new OID(snmpGetInput.getOid());
+        oid = new OID(oidString);
         pdu.add(new VariableBinding(oid));
         pdu.setMaxRepetitions(SnmpSettings.MAXREPETITIONS);
         pdu.setNonRepeaters(0);
+        pdu.setType(PDU.GETBULK);
 
-        String community = getInput.getCommunity();
         if (community == null) {
             community = SnmpSettings.DEFAULT_COMMUNITY;
         }
 
-        target = SnmpSettings.getTargetForIp(getInput.getIpAddress(), community);
-        if (snmpGetInput.getGetType().equals(SnmpGetType.GET)) {
-            pdu.setType(PDU.GET);
-        } else if (snmpGetInput.getGetType().equals(SnmpGetType.GETNEXT)) {
-            pdu.setType(PDU.GETNEXT);
-        } else {
-            pdu.setType(PDU.GETBULK);
-        }
+        target = SnmpSettings.getTargetForIp(ipAddress, community, port);
     }
 
     @Override
@@ -97,9 +86,6 @@ public class AsyncGetHandler implements ResponseListener {
                     } else {
                         storeResult(binding);
                     }
-                }
-                if (!snmpGetInput.getGetType().equals(SnmpGetType.GETWALK)) {
-                    stop = true;
                 }
                 if (response.getErrorStatus() != PDU.noError) {
                     LOG.error("Error: " + response.getErrorStatusText());

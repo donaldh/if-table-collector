@@ -3,7 +3,6 @@ package net.donaldh.snmp;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.CommunityTarget;
@@ -23,10 +22,10 @@ public class SnmpSettings {
     static final int TIMEOUT = 15000;
     static final int MAXREPETITIONS = 1000;
 
-    static Target getTargetForIp(Ipv4Address address, String community) {
+    static Target getTargetForIp(String address, String community, int port) {
         Address addr = null;
         try {
-            addr = new UdpAddress(Inet4Address.getByName(address.getValue()), SNMP_LISTEN_PORT);
+            addr = new UdpAddress(Inet4Address.getByName(address), port);
         } catch (UnknownHostException e) {
             LOG.warn("Failed to create UDP Address", e);
             return null;

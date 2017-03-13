@@ -17,6 +17,10 @@ module if-table-collector {
         leaf snmp-community {
             type string;
         }
+        leaf snmp-port {
+            type uint32;
+            default 161;
+        }
         leaf poll-interval {
             description "Polling interval in seconds";
             type uint32;

@@ -27,7 +27,6 @@ import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.messagebus.even
 import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.messagebus.eventsource.rev141202.JoinTopicOutput;
 import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.messagebus.eventsource.rev141202.JoinTopicOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.messagebus.eventsource.rev141202.JoinTopicStatus;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.smiv2._if.mib.rev000614.interfaces.group.IfEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
@@ -70,16 +69,18 @@ public class IfTableEventSource implements EventSource {
 
 	private final String address;
 	private final String community;
+	private final int port;
 
 	private final NodeKey nodeKey;
 	private final List<SchemaPath> schemaPaths = new ArrayList<>();
 	private Set<TopicId> acceptedTopics = new HashSet<>();
 
-	public IfTableEventSource(DOMNotificationPublishService publishService, Snmp snmp, String address, String community) {
+	public IfTableEventSource(DOMNotificationPublishService publishService, Snmp snmp, String address, String community, int port) {
 		this.publishService = publishService;
 		this.snmp = snmp;
 		this.address = address;
 		this.community = community;
+		this.port = port;
 
         nodeKey = new NodeKey(new NodeId(address));
 		schemaPaths.add(SchemaPath.create(true, QName.create(namespace, revision, name)));
@@ -125,8 +126,7 @@ public class IfTableEventSource implements EventSource {
 	public void execute() {
 		LOG.info("Executing poll cycle for " + address + " ...");
 		MibTable<IfEntryBuilder> historyTable =
-		        new MibTable<>(snmp, new Ipv4Address(address), community,
-		                IfEntryBuilder.class);
+		        new MibTable<>(snmp, address, community, port, IfEntryBuilder.class);
 
 		Map<Integer, IfEntryBuilder> historyStatsBuilders = historyTable.populate();
 		LOG.info("Polled " + historyStatsBuilders.size() + " rows.");
